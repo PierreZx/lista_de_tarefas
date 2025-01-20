@@ -14,13 +14,11 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Tarefas",
       debugShowCheckedModeBanner: false,
+      home: HomeScreen(),
       theme: ThemeData(
-        primarySwatch: Colors.amber,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        primaryColor: Colors.white,
       ),
-      home: HomeScreen()
       );
   }
 }

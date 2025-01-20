@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/new_page.dart';
+import 'package:lista_de_tarefas/screens/NewPageListas.dart';
+import 'package:lista_de_tarefas/screens/NewPageNovaLista.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -9,9 +10,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _indiceAtual = 0;
   final List<Widget> _telas = [
-    NewPageScreen("Minha conta"),
-    NewPageScreen("Meus pedidos"),
-    NewPageScreen("Favoritos")
+    NewPageNovaLista(),
+    NewPageListas(),
   ];
 
   @override
@@ -24,16 +24,12 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: onTabTapped,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Minha conta",
+            icon: Icon(Icons.add),
+            label: "Nova Lista de tarefas",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_basket),
-            label: "Meus pedidos",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: "Favoritos",
+            icon: Icon(Icons.task),
+            label: "Suas listas de tarefas",
           ),
         ],
       ),
