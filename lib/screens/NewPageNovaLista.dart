@@ -2,6 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NewPageNovaLista extends StatefulWidget {
+  final Function(String, List<String>) onSalvar;
+
+  NewPageNovaLista({required this.onSalvar});
+
   @override
   _NewPageNovaListaState createState() => _NewPageNovaListaState();
 }
@@ -13,9 +17,6 @@ class _NewPageNovaListaState extends State<NewPageNovaLista> {
   TextEditingController _tarefa3controller = TextEditingController();
   TextEditingController _tarefa4controller = TextEditingController();
   TextEditingController _tarefa5controller = TextEditingController();
-  
-  // Dicionário para armazenar a lista de tarefas por nome da lista
-  Map<String, List<String>> dicionarioDeListas = {};
 
   @override
   void dispose() {
@@ -34,14 +35,6 @@ class _NewPageNovaListaState extends State<NewPageNovaLista> {
       appBar: AppBar(
         title: Text("Nova Lista"),
         backgroundColor: Colors.blue,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              print("Ícone pressionado!");
-            },
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -53,36 +46,23 @@ class _NewPageNovaListaState extends State<NewPageNovaLista> {
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 8),
-            widgetTextField(),
+            TextField(
+              controller: _nomecontroller,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Informe o nome da lista',
+              ),
+            ),
             SizedBox(height: 16),
             Text(
               "Informe as tarefas:",
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 8),
-            widgetTextFieldTarefa1(), // Campo de tarefa 1
-            widgetTextFieldTarefa2(), // Campo de tarefa 2
-            widgetTextFieldTarefa3(), // Campo de tarefa 3
-            widgetTextFieldTarefa4(), // Campo de tarefa 4
-            widgetTextFieldTarefa5(), // Campo de tarefa 5
+            ..._buildTaskFields(),
             SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
-                String nomeLista = _nomecontroller.text;
-                List<String> tarefas = [
-                  _tarefa1controller.text,
-                  _tarefa2controller.text,
-                  _tarefa3controller.text,
-                  _tarefa4controller.text,
-                  _tarefa5controller.text,
-                ];
-
-                dicionarioDeListas[nomeLista] = tarefas;
-
-                print("Nome da Lista: $nomeLista");
-                print("Tarefas: $tarefas");
-                print("Dicionário Atual: $dicionarioDeListas");
-              },
+              onPressed: _salvarLista,
               child: Text("Salvar"),
             ),
           ],
@@ -91,63 +71,80 @@ class _NewPageNovaListaState extends State<NewPageNovaLista> {
     );
   }
 
-  widgetTextField() {
-    return TextField(
-      controller: _nomecontroller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: 'Informe o nome da lista',
-      ),
+
+  void _salvarLista() {
+    String nomeLista = _nomecontroller.text.trim();
+    List<String> tarefas = [
+      _tarefa1controller.text.trim(),
+      _tarefa2controller.text.trim(),
+      _tarefa3controller.text.trim(),
+      _tarefa4controller.text.trim(),
+      _tarefa5controller.text.trim(),
+    ].where((tarefa) => tarefa.isNotEmpty).toList();
+
+    if (nomeLista.isEmpty || tarefas.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Preencha o nome da lista e pelo menos uma tarefa!")),
+      );
+      return;
+    }
+
+    widget.onSalvar(nomeLista, tarefas);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Lista '$nomeLista' salva com sucesso!")),
     );
+
+    _nomecontroller.clear();
+    _tarefa1controller.clear();
+    _tarefa2controller.clear();
+    _tarefa3controller.clear();
+    _tarefa4controller.clear();
+    _tarefa5controller.clear();
   }
 
-  widgetTextFieldTarefa1() {
-    return TextField(
-      controller: _tarefa1controller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: 'Informe a tarefa 1',
-      ),
-    );
-  }
 
-  widgetTextFieldTarefa2() {
-    return TextField(
-      controller: _tarefa2controller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: 'Informe a tarefa 2',
+  List<Widget> _buildTaskFields() {
+    return [
+      TextField(
+        controller: _tarefa1controller,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: 'Informe a tarefa 1',
+        ),
       ),
-    );
-  }
-
-  widgetTextFieldTarefa3() {
-    return TextField(
-      controller: _tarefa3controller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: 'Informe a tarefa 3',
+      SizedBox(height: 8),
+      TextField(
+        controller: _tarefa2controller,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: 'Informe a tarefa 2',
+        ),
       ),
-    );
-  }
-
-  widgetTextFieldTarefa4() {
-    return TextField(
-      controller: _tarefa4controller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: 'Informe a tarefa 4',
+      SizedBox(height: 8),
+      TextField(
+        controller: _tarefa3controller,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: 'Informe a tarefa 3',
+        ),
       ),
-    );
-  }
-
-  widgetTextFieldTarefa5() {
-    return TextField(
-      controller: _tarefa5controller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: 'Informe a tarefa 5',
+      SizedBox(height: 8),
+      TextField(
+        controller: _tarefa4controller,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: 'Informe a tarefa 4',
+        ),
       ),
-    );
+      SizedBox(height: 8),
+      TextField(
+        controller: _tarefa5controller,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: 'Informe a tarefa 5',
+        ),
+      ),
+    ];
   }
 }

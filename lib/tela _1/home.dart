@@ -9,15 +9,27 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _indiceAtual = 0;
-  final List<Widget> _telas = [
-    NewPageNovaLista(),
-    NewPageListas(),
-  ];
+
+  Map<String, List<String>> dicionarioDeListas = {};
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _telas = [
+      NewPageNovaLista(
+        onSalvar: (String nomeLista, List<String> tarefas) {
+          setState(() {
+            dicionarioDeListas[nomeLista] = tarefas;
+          });
+        },
+      ),
+      NewPageListas(dicionario: dicionarioDeListas),
+    ];
+
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Gerenciador de Tarefas"),
+        backgroundColor: Colors.blue,
+      ),
       body: _telas[_indiceAtual],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _indiceAtual,
